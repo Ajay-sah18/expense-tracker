@@ -53,6 +53,20 @@ $search = trim($_GET["search"] ?? "");
 $category = trim($_GET["category"] ?? "");
 $fromDate = trim($_GET["from_date"]?? "");
 $toDate = trim($_GET["to_date"] ?? "");
+$sort = $_GET["sort"] ?? "date_desc";
+
+$allowedSorts = [
+    "date_desc" => "expense_date DESC",
+    "date_asc" => "expense_date ASC",
+    "amount_desc" => "amount DESC",
+    "amount_asc" => "amount ASC",
+    "title_asc" => "title ASC",
+    "title_desc" => "title DESC"
+];
+
+if (!array_key_exists($sort, $allowedSorts)) {
+    $sort = "date_desc";
+}
 
 $limit = 10;
 
@@ -128,6 +142,8 @@ if ($toDate !== "") {
     $sql .= " AND expense_date <= :to_date";
     $params[":to_date"] = $toDate;
 }
+
+$sql .= " ORDER BY " . $allowedSorts[$sort];
 
 $countSql = str_replace(
     "SELECT *",
@@ -283,6 +299,38 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
     <label for="to_date">To Date:</label>
     <input type="date" id="to_date" name="to_date">
 
+    <label for="sort">Sort by:</label>
+    <select name="sort" id="sort">
+         <option value="date_desc"
+            <?= $sort === "date_desc" ? "selected" : "" ?>>
+            Newest first
+        </option>
+
+        <option value="date_asc"
+        <?= $sort === "date_asc" ? "selected" : "" ?>>
+        Oldest first
+        </option>
+
+        <option value="amount_desc"
+        <?= $sort === "amount_desc" ? "selected" : "" ?>>
+        Highest amount
+        </option>
+
+        <option value="amount_asc"
+        <?= $sort === "amount_asc" ? "selected" : "" ?>>
+        Lowest amount
+        </option>
+
+        <option value="title_asc"
+        <?=$sort === "title_asc" ? "selected" : "" ?>>
+        Title A-Z
+        </option>
+
+        <option value="title_desc"
+        <?= $sort === "title_desc" ? "selected" : "" ?>>
+        Title Z-A
+        </option>
+        </select>
        <button type="submit">Search</button>
 
 </form>
