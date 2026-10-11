@@ -54,6 +54,20 @@ $category = trim($_GET["category"] ?? "");
 $fromDate = trim($_GET["from_date"]?? "");
 $toDate = trim($_GET["to_date"] ?? "");
 
+$limit = 10;
+
+$page = filter_input(
+    INPUT_GET,
+    "page",
+    FILTER_VALIDATE_INT
+);
+
+if ($page === false || $page === null || $page < 1){
+    $page = 1;
+}
+
+$offset = ($page - 1) * $limit;
+
 $dateerrors = [];
 
 if ($fromDate !== "") {
@@ -88,6 +102,7 @@ if (
 
     $dateErrors[] = "From date cannot be later than To date.";
 }
+
 if (empty($dataErrors)) {
 
 $sql = "SELECT * FROM expenses WHERE user_id = :user_id";
@@ -114,9 +129,40 @@ if ($toDate !== "") {
     $params[":to_date"] = $toDate;
 }
 
-$expenseStatement = $pdo->prepare($sql);
-$expenseStatement->execute($params);
+$countSql = str_replace(
+    "SELECT *",
+    "SELECT COUNT(*)",
+    $sql
+);
 
+$countStatement = $pdo->prepare($countSql);
+$countStatement->execute($params);
+
+$totalExpenses = $countStatement->fetchColumn();
+$totalPages = (int) ceil($totalExpenses / $limit);
+
+$sql .= " LIMIT :limit OFFSET :offset";
+$params[":limit"] = $limit;
+$params[":offset"] = $offset;
+
+$expenseStatement = $pdo->prepare($sql);
+$expenseStatement->bindValue(
+    ":user_id",
+    $_SESSION["user_id"],
+    PDO::PARAM_INT
+);
+// Bind pagination values as integers
+$expenseStatement->bindValue(":limit", $limit, PDO::PARAM_INT);
+$expenseStatement->bindValue(":offset", $offset, PDO::PARAM_INT);
+
+// Bind any remaining filter parameters
+foreach ($params as $key => $value) {
+    if ($key !== ":user_id" && $key !== ":limit" && $key !== ":offset") {
+        $expenseStatement->bindValue($key, $value);
+    }
+}
+
+$expenseStatement->execute();
 $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 } else {
     $expenses = [];
@@ -189,6 +235,18 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 
         td a {
             margin-right: 10px;
+        }
+
+        .pagination a {
+            padding: 8px 14px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-raius: 4px;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -268,6 +326,26 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 <?php endforeach; ?>
 </table>
 
+<?php if($totalPages > 1): ?>
+    <div class="pagination">
+
+    <?php if($page > 1): ?>
+        <a href="?<?= http_build_query(array_merge($_GET, ["page" => $page -1])) ?>">
+         Previous
+    </a>
+    <?php endif; ?>
+
+    <span>
+        Page <?= $page ?> of <?= $totalPages ?>
+    </span>
+
+    <?php if ($page < $totalPages): ?>
+        <a href="?<?= http_build_query(array_merge($_GET, ["page" => $page + 1])) ?>">
+            Next
+    </a>
+    <?php endif; ?>
+    </div>
+    <?php endif; ?>
 <p>
     <a href="/PHP-Learning/expense-tracker/config/dashboard.php">
         Back to Dashboard
