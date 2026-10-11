@@ -51,6 +51,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $search = trim($_GET["search"] ?? "");
 $category = trim($_GET["category"] ?? "");
+$fromDate = trim($_GET["from_date"]?? "");
+$toDate = trim($_GET["to_date"] ?? "");
+
+$dateerrors = [];
+
+if ($fromDate !== "") {
+    $dateObject = DateTime::CreateFromFormat("!Y-m-d", $fromDate);
+
+    if (
+        !$dateObject ||
+        $dateObject->format("Y-m-d") !== $fromDate
+    ) {
+        $dateErrors[] = "Please enter a valid From date.";
+    }
+}
+
+if ($toDate !== ""){
+    $dateObject = DateTime::CreateFromFormat("!Y-m-d", $toDate);
+
+    if (
+        !$dateObject ||
+        $dateObject->format("Y-m-d") !== $toDate
+    ) {
+    $dateErrors[] = "Please enter a valid To date.";
+
+    }
+}
+
+if (
+    $fromDate !== "" &&
+    $toDate !== "" &&
+    empty($dataErrors) &&
+    $fromDate > $toDate
+) {
+
+    $dateErrors[] = "From date cannot be later than To date.";
+}
+if (empty($dataErrors)) {
 
 $sql = "SELECT * FROM expenses WHERE user_id = :user_id";
 $params = [
@@ -67,11 +105,22 @@ if ($category !== "") {
     $params[":category"] = $category;
 }
 
+if ($fromDate !== "") {
+    $sql .= " AND expense_date >= :from_date";
+    $params[":from_date"] = $fromDate;
+}
+if ($toDate !== "") {
+    $sql .= " AND expense_date <= :to_date";
+    $params[":to_date"] = $toDate;
+}
+
 $expenseStatement = $pdo->prepare($sql);
 $expenseStatement->execute($params);
 
 $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
-
+} else {
+    $expenses = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -93,13 +142,25 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
         .search-form {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 25px;
         }
+        .search-form label {
+            font-size: 14px;
+        }
 
-        .search-form input {
+        .search-form input,
+        .search-form select {
             padding: 8px;
-            width: 250px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .search-form input[type="text"] {
+            witdth: 200px;
+        }
+        .search-form input[type="date"]{
+            width: 160px;
         }
 
         .search-form button {
@@ -135,6 +196,15 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <h1>My Expense</h1>
 
+         <?php if (!empty($dateErrors)): ?>
+    <div style="color: red; margin-bottom: 15px;">
+        <?php foreach ($dateErrors as $error): ?>
+            <p><?= htmlspecialchars($error, ENT_QUOTES, "UTF-8") ?></p>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
+
     <form method="GET" action="" class="search-form">
         <label for="search">Search by title:</label>
        <input type="text" id="search" name="search"
@@ -149,8 +219,14 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
           <option value="Travel">Travel</option>
 </select>
 
+    <label for="from_date">From Date:</label>
+    <input type="date" id="from_date" name="from_date">
+
+    <label for="to_date">To Date:</label>
+    <input type="date" id="to_date" name="to_date">
+
        <button type="submit">Search</button>
-       <br><br>
+
 </form>
 
     <table border="1">
@@ -182,7 +258,6 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
         name="csrf_token"
     value="<?= htmlspecialchars($_SESSION["csrf_token"], ENT_QUOTES, "UTF-8") ?>"
 >
-<br><br>
  <button type="submit">Delete</button>
 
 </form>
