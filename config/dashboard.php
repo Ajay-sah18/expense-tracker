@@ -19,6 +19,8 @@ $totalStatement->execute([
     ":user_id" => $_SESSION["user_id"]
 ]);
 
+$totalExpenses = $totalStatement->fetchColumn() ?? 0;
+
 $monthlyStatement = $pdo->prepare(
     "SELECT SUM(amount) FROM expenses
     WHERE user_id = :user_id
@@ -30,6 +32,8 @@ $monthlyStatement->execute([
     ":user_id" => $_SESSION["user_id"]
 ]);
 
+$monthlyExpenses = $monthlyStatement->fetchColumn() ?? 0;
+
 $countStatement = $pdo->prepare(
     "SELECT COUNT(*) FROM expenses
     WHERE user_id = :user_id"
@@ -39,6 +43,8 @@ $countStatement->execute([
     ":user_id" => $_SESSION["user_id"]
 ]);
 
+$expenseCount = $countStatement->fetchColumn() ?? 0;
+
 $categoryStatement = $pdo->prepare(
     "SELECT category, SUM(amount) AS total_amount
     FROM expenses
@@ -47,17 +53,36 @@ $categoryStatement = $pdo->prepare(
 );
 
 $categoryStatement->execute([
-    "user_id" => $_SESSION["user_id"]
+    ":user_id" => $_SESSION["user_id"]
 ]);
 
-
-$totalExpenses = $totalStatement->fetchColumn() ?? 0;
-
-$monthlyExpenses = $monthlyStatement->fetchColumn() ?? 0;
-
-$expenseCount = $countStatement->fetchColumn() ?? 0;
-
 $categories = $categoryStatement->fetchAll(PDO::FETCH_ASSOC);
+
+$monthlyChartStatement = $pdo->prepare(
+    "SELECT
+         YEAR(expense_date) AS expense_year,
+         MONTH(expense_date) AS expense_month,
+         SUM(amount) AS monthly_total
+    FROM expenses
+    WHERE user_id = :user_id
+    GROUP BY
+          YEAR(expense_date),
+          MONTH(expense_date)
+    ORDER BY
+         expense_year,
+         expense_month"
+);
+
+$monthlyChartStatement->execute([
+    ":user_id" => $_SESSION["user_id"]
+]);
+
+$monthlyChartData = $monthlyChartStatement->fetchAll(PDO::FETCH_ASSOC);
+
+$chartData = json_encode(
+    $monthlyChartData,
+    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+);
 
 ?>
 
@@ -96,6 +121,9 @@ $categories = $categoryStatement->fetchAll(PDO::FETCH_ASSOC);
     </p>
     <?php endforeach; ?>
 
+    <h2>Monthly Expenses Chart</h2>
+    <canvas id="monthlyExpenseChart"></canvas>
+
      <h2>Expense Management</h2>
     <p>
         <a href="/PHP-Learning/expense-tracker/add-expense.php">
@@ -110,6 +138,51 @@ $categories = $categoryStatement->fetchAll(PDO::FETCH_ASSOC);
 </p>
 <p><a href="/PHP-Learning/expense-tracker/logout.php">Logout</a></p>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+    const monthlyChartData = <?= $chartData ?>;
+
+
+const labels = monthlyChartData.map(item => {
+    const date = new Date(
+        Number(item.expense_year),
+        Number(item.expense_month) - 1
+    );
+
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric"
+    });
+});
+
+
+    const amounts = monthlyChartData.map(
+        item => Number(item.monthly_total)
+    );
+
+    const ctx = document.getElementById("monthlyExpenseChart");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Monthly Expenses (Rs.)",
+                data: amounts
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 
 </body>
 </html>
