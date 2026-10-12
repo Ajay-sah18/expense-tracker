@@ -4,6 +4,7 @@ require "../config/database.php";
 $message = "";
 $messageType = "";
 
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $name = trim($_POST["name"] ?? "");
@@ -40,6 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $message = "Registration successful!";
             $messageType = "success";
 
+            header("Location: /PHP-Learning/expense-tracker/auth/login.php");
+            exit;
+
         } catch (PDOException $e) {
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] === 1062) {
                 $message = "This email is already registered. Please use another email.";
@@ -51,6 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
     }
+
+
 }
 ?>
 

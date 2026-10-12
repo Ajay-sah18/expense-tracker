@@ -82,7 +82,7 @@ if ($page === false || $page === null || $page < 1){
 
 $offset = ($page - 1) * $limit;
 
-$dateerrors = [];
+$dateErrors = [];
 
 if ($fromDate !== "") {
     $dateObject = DateTime::CreateFromFormat("!Y-m-d", $fromDate);
@@ -110,14 +110,14 @@ if ($toDate !== ""){
 if (
     $fromDate !== "" &&
     $toDate !== "" &&
-    empty($dataErrors) &&
+    empty($dateErrors) &&
     $fromDate > $toDate
 ) {
 
     $dateErrors[] = "From date cannot be later than To date.";
 }
 
-if (empty($dataErrors)) {
+if (empty($dateErrors)) {
 
 $sql = "SELECT * FROM expenses WHERE user_id = :user_id";
 $params = [
@@ -219,7 +219,7 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
             box-sizing: border-box;
         }
         .search-form input[type="text"] {
-            witdth: 200px;
+            width: 200px;
         }
         .search-form input[type="date"]{
             width: 160px;
@@ -258,17 +258,55 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
             background-color: #007bff;
             color: white;
             text-decoration: none;
-            border-raius: 4px;
+            border-radius: 4px;
         }
 
         .pagination a:hover {
             background-color: #0056b3;
         }
+
+        .expenses-header {
+            display: flex;
+            justify-content": space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .expenses-header h1 {
+            margin: 0;
+        }
+
+        .export-button {
+            display: inline-block;
+            padding: 10px 10px;
+            background-color: #198754;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .export-button:hover {
+            background-color: #146c43;
+        }
+
+        @media (max-width: 500px) {
+            .expense-header {
+                flex-wrap: wrap;
+            }
+        }
     </style>
 </head>
 
 <body>
+<div class="expenses-header">
     <h1>My Expense</h1>
+    <a href="/PHP-Learning/expense-tracker/export.php" class="export-button">
+    Export Expenses (CSV)
+</a>
+</div>
 
          <?php if (!empty($dateErrors)): ?>
     <div style="color: red; margin-bottom: 15px;">
