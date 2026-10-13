@@ -1,17 +1,11 @@
 <?php
 
-session_start();
+require __DIR__ . "/config/auth.php";
+require __DIR__ . "/config/database.php";
 
 if(empty($_SESSION["csrf_token"])) {
     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
 }
-
-if (!isset($_SESSION["user_id"])) {
-    header ("Location: auth/login.php");
-    exit;
-}
-
-require "config/database.php";
 
 //Process the delete form.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -268,9 +262,15 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
     <div class="form-group">
         <label for="category">Category:</label>
         <select id="category" name="category" class="form-control">
-            <option value="">All Categories</option>
-            <option value="food" <?= $category === "food" ? "selected" : "" ?>>Food</option>
-            <option value="Travel" <?= $category === "Travel" ? "selected" : "" ?>>Travel</option>
+           <option value="">All Categories</option>
+<option value="Food" <?= $category === "Food" ? "selected" : "" ?>>Food</option>
+<option value="Transport" <?= $category === "Transport" ? "selected" : "" ?>>Transport</option>
+<option value="Shopping" <?= $category === "Shopping" ? "selected" : "" ?>>Shopping</option>
+<option value="Bills" <?= $category === "Bills" ? "selected" : "" ?>>Bills and Utilities</option>
+<option value="Education" <?= $category === "Education" ? "selected" : "" ?>>Education</option>
+<option value="Health" <?= $category === "Health" ? "selected" : "" ?>>Health</option>
+<option value="Entertainment" <?= $category === "Entertainment" ? "selected" : "" ?>>Entertainment</option>
+<option value="Other" <?= $category === "Other" ? "selected" : "" ?>>Other</option>
         </select>
     </div>
 

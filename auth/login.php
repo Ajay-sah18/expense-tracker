@@ -5,6 +5,10 @@ require "../config/database.php";
 
 $message = "";
 
+if (isset($_GET["expired"]) && $_GET["expired"] === "1") {
+    $message = "Your session expired due to inactivity. Please log in again.";
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST["email"] ?? "";
     $password = $_POST["password"] ?? "";
@@ -25,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $_SESSION["user_id"] = $user["id"];
     $_SESSION["user_name"] = $user["name"];
+    $_SESSION["last_activity"] = time();
 
      header("Location: /PHP-Learning/expense-tracker/config/dashboard.php");
      exit;

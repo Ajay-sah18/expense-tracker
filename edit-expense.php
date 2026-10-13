@@ -1,15 +1,7 @@
 <?php
 
-session_start();
-
-//check whether the user is logged in.
-
-if (!isset($_SESSION["user_id"])) {
-    header("Location: /PHP-Learning/expense-tracker/auth/login.php");
-    exit;
-}
-
-require "config/database.php";
+require __DIR__ . "/config/auth.php";
+require __DIR__ . "/config/database.php";
 
 if (empty($_SESSION["csrf_token"])) {
     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));

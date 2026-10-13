@@ -1,15 +1,8 @@
 
 <?php
 
-session_start();
-
-// Check whether the user is logged in.
-if (!isset($_SESSION["user_id"])) {
-    header("Location: /PHP-Learning/expense-tracker/auth/login.php");
-    exit;
-}
-
-require "./config/database.php";
+require __DIR__ . "/config/auth.php";
+require __DIR__ . "/config/database.php";
 
 // Fetch only the logged-in user's expenses.
 $exportData = $pdo->prepare(

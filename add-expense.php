@@ -1,12 +1,6 @@
 
 <?php
-session_start();
-
-if (!isset($_SESSION["user_id"])) {
-    header("Location: /PHP-Learning/expense-tracker/auth/login.php");
-    exit;
-}
-
+require __DIR__ . "/config/auth.php";
 require "config/database.php";
 
 // Generate a CSRF token for the form
