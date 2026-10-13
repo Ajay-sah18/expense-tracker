@@ -186,127 +186,60 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Expenses</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        .search-form label {
-            font-size: 14px;
-        }
-
-        .search-form input,
-        .search-form select {
-            padding: 8px;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
-        .search-form input[type="text"] {
-            width: 200px;
-        }
-        .search-form input[type="date"]{
-            width: 160px;
-        }
-
-        .search-form button {
-            padding: 8px 14px;
-            cursor: pointer;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ccc;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        td form {
-            display: inline;
-        }
-
-        td a {
-            margin-right: 10px;
-        }
-
-        .pagination a {
-            padding: 8px 14px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        .pagination a:hover {
-            background-color: #0056b3;
-        }
-
-        .expenses-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .expenses-header h1 {
-            margin: 0;
-        }
-
-        .export-button {
-            display: inline-block;
-            padding: 10px 10px;
-            background-color: #198754;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .export-button:hover {
-            background-color: #146c43;
-        }
-
-        @media (max-width: 500px) {
-            .expense-header {
-                flex-wrap: wrap;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/PHP-Learning/expense-tracker/assets/css/style.css">
 </head>
 
 <body>
-<div class="expenses-header">
-    <h1>My Expense</h1>
-    <a href="/PHP-Learning/expense-tracker/export.php" class="export-button">
-    Export Expenses (CSV)
-</a>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <h2 class="brand">Expense Tracker</h2>
+
+        <nav>
+            <p class="sidebar-label">MAIN MENU</p>
+
+            <div class="nav-links">
+                <a href="/PHP-Learning/expense-tracker/dashboard.php" class="nav-link">
+                    Dashboard
+                </a>
+
+                <a href="/PHP-Learning/expense-tracker/add-expense.php" class="nav-link">
+                    Add Expense
+                </a>
+
+                <a href="/PHP-Learning/expense-tracker/view-expenses.php" class="nav-link active">
+                    View Expenses
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/PHP-Learning/expense-tracker/logout.php" class="nav-link">
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+<div class="page-header">
+    <div class="page-heading">
+        <h1 class="page-title">My Expenses</h1>
+        <p class="page-subtitle">Search, filter, and manage your expenses.</p>
+    </div>
+
+    <a href="/PHP-Learning/expense-tracker/export.php"
+       class="button button-secondary">
+        Export Expenses (CSV)
+    </a>
 </div>
+
+
 
          <?php if (!empty($dateErrors)): ?>
     <div style="color: red; margin-bottom: 15px;">
@@ -317,100 +250,146 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 <?php endif; ?>
 
 
-    <form method="GET" action="" class="search-form">
+<section class="panel filter-panel">
+<form method="GET" action="" class="search-form">
+
+    <div class="form-group">
         <label for="search">Search by title:</label>
-       <input type="text" id="search" name="search"
-       placeholder="Enter expense title"
-       >
+        <input
+            type="text"
+            id="search"
+            name="search"
+            class="form-control"
+            placeholder="Enter expense title"
+            value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>"
+        >
+    </div>
 
-       <label for="category">Category:</label>
-
-       <select id="category" name="category">
-          <option value="">All Categories</option>
-          <option value="food">Food</option>
-          <option value="Travel">Travel</option>
-</select>
-
-    <label for="from_date">From Date:</label>
-    <input type="date" id="from_date" name="from_date">
-
-    <label for="to_date">To Date:</label>
-    <input type="date" id="to_date" name="to_date">
-
-    <label for="sort">Sort by:</label>
-    <select name="sort" id="sort">
-         <option value="date_desc"
-            <?= $sort === "date_desc" ? "selected" : "" ?>>
-            Newest first
-        </option>
-
-        <option value="date_asc"
-        <?= $sort === "date_asc" ? "selected" : "" ?>>
-        Oldest first
-        </option>
-
-        <option value="amount_desc"
-        <?= $sort === "amount_desc" ? "selected" : "" ?>>
-        Highest amount
-        </option>
-
-        <option value="amount_asc"
-        <?= $sort === "amount_asc" ? "selected" : "" ?>>
-        Lowest amount
-        </option>
-
-        <option value="title_asc"
-        <?=$sort === "title_asc" ? "selected" : "" ?>>
-        Title A-Z
-        </option>
-
-        <option value="title_desc"
-        <?= $sort === "title_desc" ? "selected" : "" ?>>
-        Title Z-A
-        </option>
+    <div class="form-group">
+        <label for="category">Category:</label>
+        <select id="category" name="category" class="form-control">
+            <option value="">All Categories</option>
+            <option value="food" <?= $category === "food" ? "selected" : "" ?>>Food</option>
+            <option value="Travel" <?= $category === "Travel" ? "selected" : "" ?>>Travel</option>
         </select>
-       <button type="submit">Search</button>
+    </div>
+
+    <div class="form-group">
+        <label for="from_date">From Date:</label>
+        <input
+            type="date"
+            id="from_date"
+            name="from_date"
+            class="form-control"
+            value="<?= htmlspecialchars($fromDate, ENT_QUOTES, 'UTF-8') ?>"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="to_date">To Date:</label>
+        <input
+            type="date"
+            id="to_date"
+            name="to_date"
+            class="form-control"
+            value="<?= htmlspecialchars($toDate, ENT_QUOTES, 'UTF-8') ?>"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="sort">Sort by:</label>
+        <select name="sort" id="sort" class="form-control">
+            <option value="date_desc" <?= $sort === "date_desc" ? "selected" : "" ?>>
+                Newest first
+            </option>
+            <option value="date_asc" <?= $sort === "date_asc" ? "selected" : "" ?>>
+                Oldest first
+            </option>
+            <option value="amount_desc" <?= $sort === "amount_desc" ? "selected" : "" ?>>
+                Highest amount
+            </option>
+            <option value="amount_asc" <?= $sort === "amount_asc" ? "selected" : "" ?>>
+                Lowest amount
+            </option>
+            <option value="title_asc" <?= $sort === "title_asc" ? "selected" : "" ?>>
+                Title A-Z
+            </option>
+            <option value="title_desc" <?= $sort === "title_desc" ? "selected" : "" ?>>
+                Title Z-A
+            </option>
+        </select>
+    </div>
+
+    <button type="submit" class="button">Search</button>
 
 </form>
-
-    <table border="1">
-        <tr>
-            <th>Title</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Action</th>
-</tr>
-
-<?php foreach($expenses as $expense): ?>
- <tr>
- <td><?= htmlspecialchars($expense["title"]) ?></td>
- <td><?= htmlspecialchars($expense["amount"]) ?></td>
- <td><?= htmlspecialchars($expense["category"]) ?></td>
- <td><?= htmlspecialchars($expense["expense_date"]) ?></td>
- <td>
-
- <a href="/PHP-Learning/expense-tracker/edit-expense.php?id=<?= (int) $expense['id'] ?>">
-    Edit
-</a>
-    <form method="POST" action="">
-        <input type="hidden" name="expense_id"
-         value="<?= (int) $expense["id"] ?>">
+        </section>
 
 
-         <input type="hidden"
-        name="csrf_token"
-    value="<?= htmlspecialchars($_SESSION["csrf_token"], ENT_QUOTES, "UTF-8") ?>"
->
- <button type="submit">Delete</button>
+<div class="panel">
+    <h2 class="panel-title">Expense History</h2>
 
-</form>
-  </td>
+    <div class="table-container">
+        <table class="expense-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
- </tr>
+            <tbody>
+                <?php if (empty($expenses)): ?>
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            No expenses found.
+                        </td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($expenses as $expense): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($expense["title"], ENT_QUOTES, "UTF-8") ?></td>
+                            <td><?= htmlspecialchars($expense["amount"], ENT_QUOTES, "UTF-8") ?></td>
+                            <td><?= htmlspecialchars($expense["category"], ENT_QUOTES, "UTF-8") ?></td>
+                            <td><?= htmlspecialchars($expense["expense_date"], ENT_QUOTES, "UTF-8") ?></td>
 
-<?php endforeach; ?>
-</table>
+                            <td>
+                                <div class="table-actions">
+                                    <a
+                                        class="button button-secondary"
+                                        href="/PHP-Learning/expense-tracker/edit-expense.php?id=<?= (int) $expense['id'] ?>"
+                                    >Edit</a>
+
+                                    <form method="POST" action="" class="delete-form">
+                                        <input
+                                            type="hidden"
+                                            name="expense_id"
+                                            value="<?= (int) $expense["id"] ?>"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="<?= htmlspecialchars($_SESSION["csrf_token"], ENT_QUOTES, "UTF-8") ?>"
+                                        >
+
+                                        <button type="submit" class="button button-danger">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 <?php if($totalPages > 1): ?>
     <div class="pagination">
@@ -437,13 +416,19 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
         Back to Dashboard
 </a>
 </p>
-<?php if(isset($_SESSION["success_message"])): ?>
-    <p id="success-message" style="color: green;">
-        <?= htmlspecialchars($_SESSION["success_message"]) ?>
-</p>
 
-<?php unset($_SESSION["success_message"]); ?>
+
+<?php if (!empty($_SESSION["success_message"])): ?>
+    <div id="success-message" class="alert-success">
+        <?= htmlspecialchars(
+            $_SESSION["success_message"],
+            ENT_QUOTES,
+            "UTF-8"
+        ) ?>
+    </div>
+    <?php unset($_SESSION["success_message"]); ?>
 <?php endif; ?>
+
 
 <script>
     const message = document.getElementById("success-message");
@@ -454,6 +439,7 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
         }, 3000);
     }
 </script>
-
+</main>
+</div>
 </body>
 </html>

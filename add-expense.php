@@ -60,6 +60,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
+$allowedCategories = [
+    "Food",
+    "Transport",
+    "Shopping",
+    "Bills",
+    "Education",
+    "Health",
+    "Entertainment",
+    "Other"
+];
+
+if (!in_array($category, $allowedCategories, true)) {
+    $error = "Please select a valid expense category.";
+}
+
         // Save the expense if validation succeeds
         if ($error === "") {
             $expenseStatement = $pdo->prepare(
@@ -91,47 +106,153 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Expense</title>
+
+    <link rel="stylesheet" href="/PHP-Learning/expense-tracker/assets/css/style.css">
 </head>
 <body>
 
-<h1>Add Expense</h1>
+<div class="app-layout">
 
-<?php if ($error !== ""): ?>
-    <p>
-        <?= htmlspecialchars($error, ENT_QUOTES, "UTF-8") ?>
-    </p>
-<?php endif; ?>
+    <aside class="sidebar">
+        <h2 class="brand">Expense Tracker</h2>
 
-<form method="POST">
-    <input
-        type="hidden"
-        name="csrf_token"
-        value="<?= htmlspecialchars($_SESSION["csrf_token"], ENT_QUOTES, "UTF-8") ?>"
-    >
+        <nav>
+            <p class="sidebar-label">MAIN MENU</p>
 
-    <label for="expense-title">Expense Title</label>
-    <input type="text" id="expense-title"
-           name="expense-title" required>
+            <div class="nav-links">
+                <a href="/PHP-Learning/expense-tracker/config/dashboard.php"
+                   class="nav-link">
+                    Dashboard
+                </a>
 
-    <label for="amount">Amount</label>
-    <input type="number" id="amount" name="amount"
-           step="0.01" min="0.01" required>
+                <a href="/PHP-Learning/expense-tracker/add-expense.php"
+                   class="nav-link active">
+                    Add Expense
+                </a>
 
+                <a href="/PHP-Learning/expense-tracker/view-expenses.php"
+                   class="nav-link">
+                    View Expenses
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/PHP-Learning/expense-tracker/logout.php"
+               class="nav-link">
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <div class="page-header">
+            <div class="page-heading">
+                <h1 class="page-title">Add Expense</h1>
+                <p class="page-subtitle">
+                    Record a new expense and keep your spending organized.
+                </p>
+            </div>
+        </div>
+
+        <?php if ($error !== ""): ?>
+            <div class="alert-error">
+                <?= htmlspecialchars($error, ENT_QUOTES, "UTF-8") ?>
+            </div>
+        <?php endif; ?>
+
+        <section class="panel">
+            <h2 class="panel-title">Expense Details</h2>
+
+            <form method="POST" class="expense-form">
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?= htmlspecialchars($_SESSION["csrf_token"], ENT_QUOTES, "UTF-8") ?>"
+                >
+
+                <div class="form-group">
+                    <label for="expense-title">Expense Title</label>
+                    <input
+                        type="text"
+                        id="expense-title"
+                        name="expense-title"
+                        class="form-control"
+                        placeholder="e.g. Lunch, Bus fare"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        class="form-control"
+                        step="0.01"
+                        min="0.01"
+                        placeholder="Enter amount"
+                        required
+                    >
+                </div>
+
+
+<div class="form-group">
     <label for="category">Category</label>
-    <input type="text" id="category" name="category" required>
 
-    <label for="date">Expense Date</label>
-    <input type="date" id="date" name="date" required>
+    <select
+        id="category"
+        name="category"
+        class="form-control"
+        required
+    >
+        <option value="" disabled selected>
+            Select a category
+        </option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Bills">Bills and Utilities</option>
+        <option value="Education">Education</option>
+        <option value="Health">Health</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Other">Other</option>
+    </select>
+</div>
 
-    <button type="submit">Add Expense</button>
-</form>
 
-<p>
-    <a href="/PHP-Learning/expense-tracker/config/dashboard.php">
-        Back to Dashboard
-    </a>
-</p>
+                <div class="form-group">
+                    <label for="date">Expense Date</label>
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button">
+                        Add Expense
+                    </button>
+
+                    <a href="/PHP-Learning/expense-tracker/dashboard.php"
+                       class="button button-secondary">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+</div>
 
 </body>
 </html>

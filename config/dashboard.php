@@ -91,52 +91,133 @@ $chartData = json_encode(
 <head>
     <meta charset="UTF-8">
     <title>Expense Tracker Dashboard</title>
+    <link rel="stylesheet" href="/PHP-Learning/expense-tracker/assets/css/style.css">
 </head>
+
 <body>
+    <div class="app-layout">
 
-    <h1>Welcome to your Expense Tracker</h1>
+        <aside class="sidebar">
+            <h2 class="brand">Expense Tracker</h2>
 
-    <p>
-        Hello,
-        <?= htmlspecialchars($_SESSION["user_name"], ENT_QUOTES, "UTF-8") ?>!
-    </p>
+            <div>
+                <p class="sidebar-label">MAIN MENU</p>
 
-    <p>Your user ID is: <?= (int) $_SESSION["user_id"] ?></p>
+                <nav class="nav-links">
+                    <a href="/PHP-Learning/expense-tracker/config/dashboard.php"
+                       class="nav-link active">
+                        Dashboard
+                    </a>
 
-    <h2>Total Expenses</h2>
-    <p>Rs. <?= number_format((float) $totalExpenses, 2) ?></p>
+                    <a href="/PHP-Learning/expense-tracker/add-expense.php"
+                       class="nav-link">
+                        Add Expense
+                    </a>
 
-    <h2>This Month's Expenses</h2>
-    <p>Rs. <?= number_format((float) $monthlyExpenses, 2) ?></p>
+                    <a href="/PHP-Learning/expense-tracker/view-expenses.php"
+                       class="nav-link">
+                        View Expenses
+                    </a>
+                </nav>
+            </div>
 
-    <h2>Number of Expenses</h2>
-    <p><?= number_format((int) $expenseCount) ?> expenses</p>
+            <div class="sidebar-footer">
+                <a href="/PHP-Learning/expense-tracker/logout.php"
+                   class="nav-link">
+                    Logout
+                </a>
+            </div>
+        </aside>
 
-    <h2>Category wise Expenses</h2>
+        <main class="main-content">
 
-    <?php foreach ($categories as $category): ?>
-        <p>
-            <?= htmlspecialchars($category["category"], ENT_QUOTES, "UTF-8") ?>:
-            Rs. <?= number_format((float) $category["total_amount"],2) ?>
-    </p>
-    <?php endforeach; ?>
-
-    <h2>Monthly Expenses Chart</h2>
-    <canvas id="monthlyExpenseChart"></canvas>
-
-     <h2>Expense Management</h2>
-    <p>
-        <a href="/PHP-Learning/expense-tracker/add-expense.php">
-            Add Expense
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">
+                        Welcome back,
+                        <?= htmlspecialchars($_SESSION["user_name"], ENT_QUOTES, "UTF-8") ?>!
+                    </p>
+                </div>
+                <a href="/PHP-Learning/expense-tracker/add-expense.php"
+   class="button">
+    + Add Expense
 </a>
-</p>
+            </header>
 
-<p>
-    <a href="/PHP-Learning/expense-tracker/view-expenses.php">
-        View Expenses
-</a>
-</p>
-<p><a href="/PHP-Learning/expense-tracker/logout.php">Logout</a></p>
+<section class="stats-grid">
+
+    <article class="stat-card">
+        <p class="stat-label">Total Expenses</p>
+        <p class="stat-value">
+            Rs. <?= number_format((float) $totalExpenses, 2) ?>
+        </p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-label">This Month's Expenses</p>
+        <p class="stat-value">
+            Rs. <?= number_format((float) $monthlyExpenses, 2) ?>
+        </p>
+    </article>
+
+    <article class="stat-card">
+        <p class="stat-label">Number of Expenses</p>
+        <p class="stat-value">
+            <?= number_format((int) $expenseCount) ?>
+        </p>
+    </article>
+
+</section>
+
+
+<section class="content-grid">
+
+    <article class="panel">
+        <h2 class="panel-title">Category-wise Expenses</h2>
+
+        <div class="category-list">
+            <?php if (empty($categories)): ?>
+                <p class="empty-state">No expenses recorded yet.</p>
+            <?php else: ?>
+                <?php foreach ($categories as $category): ?>
+                    <div class="category-row">
+                        <span class="category-name">
+                            <?= htmlspecialchars(
+                                $category["category"],
+                                ENT_QUOTES,
+                                "UTF-8"
+                            ) ?>
+                        </span>
+
+                        <span class="category-amount">
+                            Rs. <?= number_format(
+                                (float) $category["total_amount"],
+                                2
+                            ) ?>
+                        </span>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </article>
+
+<article class="panel">
+    <h2 class="panel-title">Monthly Expenses</h2>
+
+    <div class="chart-container">
+        <canvas id="monthlyExpenseChart"></canvas>
+    </div>
+</article>
+
+
+</section>
+
+
+        </main>
+
+    </div>
+</body>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
