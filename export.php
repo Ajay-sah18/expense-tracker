@@ -1,8 +1,9 @@
+
 <?php
 
 session_start();
 
-
+// Check whether the user is logged in.
 if (!isset($_SESSION["user_id"])) {
     header("Location: /PHP-Learning/expense-tracker/auth/login.php");
     exit;
@@ -10,9 +11,11 @@ if (!isset($_SESSION["user_id"])) {
 
 require "./config/database.php";
 
+// Fetch only the logged-in user's expenses.
 $exportData = $pdo->prepare(
-    "SELECT * FROM expenses
-    WHERE user_id = :user_id"
+    "SELECT title, amount, category, expense_date
+     FROM expenses
+     WHERE user_id = :user_id"
 );
 
 $exportData->execute([
@@ -21,11 +24,29 @@ $exportData->execute([
 
 $expenses = $exportData->fetchAll(PDO::FETCH_ASSOC);
 
-header("Content-Type/csv; charset=utf-8");
+// Protect text cells against spreadsheet formula injection.
+function safeCsvText($value)
+{
+    $value = (string) $value;
+
+    if (preg_match('/^[\t\r\n ]*[=+\-@]/', $value)) {
+        return "'" . $value;
+    }
+
+    return $value;
+}
+
+// Send CSV download headers.
+header("Content-Type: text/csv; charset=UTF-8");
 header("Content-Disposition: attachment; filename=expenses.csv");
+header("X-Content-Type-Options: nosniff");
 
 $output = fopen("php://output", "w");
 
+// Add a UTF-8 BOM for better compatibility with Excel.
+fwrite($output, "\xEF\xBB\xBF");
+
+// Write the column headings.
 fputcsv($output, [
     "Title",
     "Amount",
@@ -33,17 +54,15 @@ fputcsv($output, [
     "Expense Date"
 ]);
 
+// Write the expense records.
 foreach ($expenses as $expense) {
     fputcsv($output, [
-        $expense["title"],
+        safeCsvText($expense["title"]),
         $expense["amount"],
-        $expense["category"],
+        safeCsvText($expense["category"]),
         $expense["expense_date"]
     ]);
 }
 
 fclose($output);
 exit;
-
-
-

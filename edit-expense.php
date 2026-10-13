@@ -22,21 +22,22 @@ if ($expenseId === false || $expenseId === null || $expenseId <= 0){
     exit("Invalid expense ID.");
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST"){
-   if (
-    !isset($_POST["csrf_token"] , $_SESSION["csrf_token"]) ||
-    !hash_equals($_SESSION["csrf_token"], $_POST["csrf_token"])
+$submittedToken = $_POST["csrf_token"] ?? "";
 
+if (
+    !is_string($submittedToken) ||
+    !is_string($_SESSION["csrf_token"] ?? null) ||
+    !hash_equals($_SESSION["csrf_token"], $submittedToken)
 ) {
     http_response_code(403);
-    exit ("Invalid CSRF token. Request Rejected.");
-
+    exit("Invalid CSRF token. Request rejected.");
 }
 
     $title = trim($_POST["title"] ?? "");
     $amount = trim($_POST["amount"] ?? "");
     $category = trim($_POST["category"] ?? "");
     $expenseDate = trim($_POST["expense_date"] ?? "");
+
 $formData = [
     "title" => $title,
     "amount" => $amount,
@@ -110,7 +111,7 @@ if (!$checkStatement->fetch(PDO::FETCH_ASSOC)) {
 header("Location: /PHP-Learning/expense-tracker/view-expenses.php");
 exit;
 }
-}
+
 
 
 //Find the expense belonging to the logged-in user.

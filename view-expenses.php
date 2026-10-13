@@ -267,7 +267,7 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 
         .expenses-header {
             display: flex;
-            justify-content": space-between;
+            justify-content: space-between;
             align-items: center;
             gap: 15px;
             margin-bottom: 20px;
