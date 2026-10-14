@@ -1,7 +1,8 @@
 
 <?php
 require __DIR__ . "/config/auth.php";
-require "config/database.php";
+require __DIR__ . "/config/database.php";
+require __DIR__ . "/src/ExpenseValidator.php";
 
 // Generate a CSRF token for the form
 if (empty($_SESSION["csrf_token"])) {
@@ -26,32 +27,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $category = trim($_POST["category"] ?? "");
         $date = $_POST["date"] ?? "";
 
-        // Validate the title
-        if ($expense === "") {
-            $error = "Expense title cannot be empty.";
-        }
-        // Validate the amount
-        elseif (
-            !is_numeric($amount) ||
-            !is_finite((float) $amount) ||
-            (float) $amount <= 0
-        ) {
-            $error = "Amount must be greater than zero.";
-        }
-        // Validate the category
-        elseif ($category === "") {
-            $error = "Category cannot be empty.";
-        }
-        // Validate the date format
-        else {
-            $dateObject = DateTime::createFromFormat("!Y-m-d", $date);
 
-            if (
-                !$dateObject ||
-                $dateObject->format("Y-m-d") !== $date
-            ) {
-                $error = "Please enter a valid expense date.";
-            }
+// Validate the title
+if (!isValidExpenseTitle($expense)) {
+    $error = "Expense title cannot be empty.";
+}
+// Validate the amount
+elseif (!isValidExpenseAmount($amount)) {
+    $error = "Amount must be greater than zero.";
+}
+// Validate the category
+elseif (!isValidExpenseCategory($category)) {
+    $error = "Category cannot be empty.";
+}
+// Validate the date
+elseif (!isValidExpenseDate($date)) {
+    $error = "Please enter a valid expense date.";
+}
         }
 
 $allowedCategories = [
@@ -93,7 +85,7 @@ if (!in_array($category, $allowedCategories, true)) {
             exit;
         }
     }
-}
+
 ?>
 
 <!DOCTYPE html>

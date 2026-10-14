@@ -1,0 +1,13 @@
+{
+    "name": "ajay/expense-tracker",
+    "description": "A PHP expense tracker learning project with PDO and PHPUnit tests",
+    "authors": [
+        {
+            "name": "Ajay-Sah18",
+            "email": "ajaysah1374@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    }
+}
