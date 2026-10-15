@@ -1,6 +1,7 @@
 {
     "name": "ajay/expense-tracker",
     "description": "A PHP expense tracker learning project with PDO and PHPUnit tests",
+    "license": "MIT",
     "authors": [
         {
             "name": "Ajay-Sah18",
