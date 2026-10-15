@@ -37,29 +37,14 @@ elseif (!isValidExpenseAmount($amount)) {
     $error = "Amount must be greater than zero.";
 }
 // Validate the category
-elseif (!isValidExpenseCategory($category)) {
-    $error = "Category cannot be empty.";
+elseif (!isValidExpenseCategoryForExpense($category)) {
+    $error = "Please select a valid expense category.";
 }
 // Validate the date
 elseif (!isValidExpenseDate($date)) {
     $error = "Please enter a valid expense date.";
 }
         }
-
-$allowedCategories = [
-    "Food",
-    "Transport",
-    "Shopping",
-    "Bills",
-    "Education",
-    "Health",
-    "Entertainment",
-    "Other"
-];
-
-if (!in_array($category, $allowedCategories, true)) {
-    $error = "Please select a valid expense category.";
-}
 
         // Save the expense if validation succeeds
         if ($error === "") {

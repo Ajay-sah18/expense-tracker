@@ -46,3 +46,26 @@ function isValidExpenseDate(string $date): bool
     }
     return $dateObject->format('Y-m-d') === $date;
 }
+
+function isAllowedExpenseCategory(string $category) : bool
+{
+ $allowedCategories = [
+    "Food",
+    "Transport",
+    "Shopping",
+    "Bills",
+    "Education",
+    "Health",
+    "Entertainment",
+    "Other"
+ ];
+
+ return in_array($category, $allowedCategories, true);
+}
+
+function isValidExpenseCategoryForExpense(string $category): bool
+{
+   return isValidExpenseCategory($category)
+   && isAllowedExpenseCategory($category);
+
+}
