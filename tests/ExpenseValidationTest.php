@@ -65,12 +65,12 @@ public function testExpenseDate(): void
 
 public function testValidationTest() : void
 {
-    $this->assertSame(true, isValidExpenseAmount(100));
+    $this->assertTrue(isValidExpenseAmount(100));
 }
 
 public function testZeroAmountIsInvalid(): void
 {
-    $this->assertSame(false, isValidExpenseAmount(0));
+    $this->assertFalse(isValidExpenseAmount(0));
 }
 
 public function testInvalidCalendarDateIsRejected() : void
@@ -177,7 +177,5 @@ public static function allowedCategoriesProvider(): array
         ['Entertainment'],
         ['Other'],
     ];
-}
-
-
+  }
 }
