@@ -146,8 +146,16 @@ a:hover {
     padding: 22px;
     background-color: var(--card-bg);
     border: 1px solid var(--border);
+    border-top: 4px solid var(--primary);
     border-radius: 16px;
     box-shadow: 0 4px 18px rgba(48, 42, 68, 0.04);
+}
+.stat-card:nth-child(2) {
+    border-top-color: #3b82f6;
+}
+
+.stat-card:nth-child(3) {
+    border-top-color: #16a34a;
 }
 
 .stat-label {
@@ -191,7 +199,7 @@ a:hover {
 .chart-container {
     position: relative;
     width: 100%;
-    min-height: 260px;
+    min-height: 320px;
 }
 
 .category-list {
@@ -202,16 +210,37 @@ a:hover {
 
 .category-row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding-bottom: 12px;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 14px;
     border-bottom: 1px solid var(--border);
 }
 
 .category-row:last-child {
     padding-bottom: 0;
     border-bottom: 0;
+}
+
+.category-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.category-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #f0ebff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.category-bar-fill {
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: 10px;
+    transition: width 0.3s ease;
 }
 
 .category-name {

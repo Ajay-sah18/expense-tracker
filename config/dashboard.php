@@ -172,29 +172,60 @@ $chartData = json_encode(
         <h2 class="panel-title">Category-wise Expenses</h2>
 
         <div class="category-list">
-            <?php if (empty($categories)): ?>
-                <p class="empty-state">No expenses recorded yet.</p>
-            <?php else: ?>
-                <?php foreach ($categories as $category): ?>
-                    <div class="category-row">
-                        <span class="category-name">
-                            <?= htmlspecialchars(
-                                $category["category"],
-                                ENT_QUOTES,
-                                "UTF-8"
-                            ) ?>
-                        </span>
+            <?php
+$maxCategoryExpense = 0;
 
-                        <span class="category-amount">
-                            Rs. <?= number_format(
-                                (float) $category["total_amount"],
-                                2
-                            ) ?>
-                        </span>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
+foreach ($categories as $category) {
+    $categoryAmount = (float) $category["total_amount"];
+
+    if ($categoryAmount > $maxCategoryExpense) {
+        $maxCategoryExpense = $categoryAmount;
+    }
+}
+?>
+
+<div class="category-list">
+    <?php if (empty($categories)): ?>
+        <p class="empty-state">No expenses recorded yet.</p>
+    <?php else: ?>
+        <?php foreach ($categories as $category): ?>
+
+            <?php
+            $categoryAmount = (float) $category["total_amount"];
+
+            $percentage = ($maxCategoryExpense > 0)
+                ? ($categoryAmount / $maxCategoryExpense) * 100
+                : 0;
+            ?>
+
+            <div class="category-row">
+
+                <div class="category-info">
+                    <span class="category-name">
+                        <?= htmlspecialchars(
+    ucwords(strtolower($category["category"])),
+    ENT_QUOTES,
+    "UTF-8"
+) ?>
+                    </span>
+
+                    <span class="category-amount">
+                        Rs. <?= number_format($categoryAmount, 2) ?>
+                    </span>
+                </div>
+
+                <div class="category-bar">
+                    <div
+                        class="category-bar-fill"
+                        style="width: <?= number_format($percentage, 2, ".", "") ?>%;"
+                    ></div>
+                </div>
+
+            </div>
+
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
     </article>
 
 <article class="panel">
@@ -251,6 +282,7 @@ const labels = monthlyChartData.map(item => {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true
@@ -259,6 +291,4 @@ const labels = monthlyChartData.map(item => {
         }
     });
 </script>
-
-</body>
 </html>
