@@ -603,28 +603,40 @@ a:hover {
 
 
 /* Add Expense form */
+
 .expense-form {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    gap: 24px;
     max-width: 850px;
 }
 
 .expense-form .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 9px;
     min-width: 0;
 }
 
 .expense-form .form-group label {
     font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
 }
 
 .expense-form .form-control {
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    min-height: 46px;
+    border-radius: 9px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.expense-form .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(112, 71, 245, 0.12);
+    outline: none;
 }
 
 .expense-form .form-actions {
@@ -633,7 +645,7 @@ a:hover {
     flex-wrap: wrap;
     align-items: center;
     gap: 12px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 @media (max-width: 600px) {
@@ -649,6 +661,25 @@ a:hover {
     .expense-form .form-actions .button {
         text-align: center;
         justify-content: center;
+    }
+}
+
+
+/* Add Expense page panel */
+.add-expense-panel {
+    max-width: 900px;
+    padding: 30px;
+}
+
+.add-expense-panel .panel-title {
+    margin-bottom: 26px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+@media (max-width: 600px) {
+    .add-expense-panel {
+        padding: 20px 16px;
     }
 }
 

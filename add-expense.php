@@ -135,7 +135,7 @@ elseif (!isValidExpenseDate($date)) {
             </div>
         <?php endif; ?>
 
-        <section class="panel">
+        <section class="panel add-expense-panel">
             <h2 class="panel-title">Expense Details</h2>
 
             <form method="POST" class="expense-form">
@@ -213,7 +213,7 @@ elseif (!isValidExpenseDate($date)) {
                         Add Expense
                     </button>
 
-                    <a href="/PHP-Learning/expense-tracker/dashboard.php"
+                    <a href="/PHP-Learning/expense-tracker/config/dashboard.php"
                        class="button button-secondary">
                         Cancel
                     </a>
