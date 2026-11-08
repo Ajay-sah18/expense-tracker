@@ -192,8 +192,11 @@ a:hover {
 }
 
 .panel-title {
-    margin: 0 0 20px;
-    font-size: 18px;
+    margin: 0 0 24px;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
 }
 
 .chart-container {
@@ -284,11 +287,14 @@ a:hover {
 .button-secondary {
     background-color: #f0ebff;
     color: var(--primary);
+    border: 1px solid #e5dcff;
+    transition: all 0.2s ease;
 }
 
 .button-secondary:hover {
     background-color: #e5dcff;
     color: var(--primary-dark);
+    transform: translateY(-1px);
 }
 
 .form-control {
@@ -407,15 +413,17 @@ a:hover {
     border-radius: 12px;
 }
 
+
 .expense-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background-color: var(--card-bg);
 }
 
 .expense-table th,
 .expense-table td {
-    padding: 14px 16px;
+    padding: 16px 18px;
     text-align: left;
     border-bottom: 1px solid var(--border);
 }
@@ -426,15 +434,26 @@ a:hover {
     font-size: 13px;
     font-weight: 700;
     white-space: nowrap;
+    letter-spacing: 0.3px;
+}
+
+.expense-table td {
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.expense-table tbody tr {
+    transition: background-color 0.2s ease;
 }
 
 .expense-table tbody tr:hover {
-    background-color: #faf9ff;
+    background-color: #f7f4ff;
 }
 
 .expense-table tbody tr:last-child td {
     border-bottom: 0;
 }
+
 
 .table-actions {
     display: flex;
@@ -451,12 +470,14 @@ a:hover {
 .button-danger {
     background-color: #fff0f0;
     color: var(--danger);
-    border-color: #ffdada;
+    border: 1px solid #ffdada;
+    transition: all 0.2s ease;
 }
 
 .button-danger:hover {
     background-color: #ffe0e0;
     color: #a82020;
+    transform: translateY(-1px);
 }
 
 .pagination {

@@ -245,8 +245,10 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
 
 
 <section class="panel filter-panel">
+
 <form method="GET" action="" class="search-form">
 
+    <!-- Search by title -->
     <div class="form-group">
         <label for="search">Search by title:</label>
         <input
@@ -259,21 +261,36 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
         >
     </div>
 
+    <!-- Category -->
     <div class="form-group">
         <label for="category">Category:</label>
         <select id="category" name="category" class="form-control">
-           <option value="">All Categories</option>
-<option value="Food" <?= $category === "Food" ? "selected" : "" ?>>Food</option>
-<option value="Transport" <?= $category === "Transport" ? "selected" : "" ?>>Transport</option>
-<option value="Shopping" <?= $category === "Shopping" ? "selected" : "" ?>>Shopping</option>
-<option value="Bills" <?= $category === "Bills" ? "selected" : "" ?>>Bills and Utilities</option>
-<option value="Education" <?= $category === "Education" ? "selected" : "" ?>>Education</option>
-<option value="Health" <?= $category === "Health" ? "selected" : "" ?>>Health</option>
-<option value="Entertainment" <?= $category === "Entertainment" ? "selected" : "" ?>>Entertainment</option>
-<option value="Other" <?= $category === "Other" ? "selected" : "" ?>>Other</option>
+            <option value="">All Categories</option>
+            <option value="Food" <?= $category === "Food" ? "selected" : "" ?>>Food</option>
+            <option value="Transport" <?= $category === "Transport" ? "selected" : "" ?>>Transport</option>
+            <option value="Shopping" <?= $category === "Shopping" ? "selected" : "" ?>>Shopping</option>
+            <option value="Bills" <?= $category === "Bills" ? "selected" : "" ?>>Bills and Utilities</option>
+            <option value="Education" <?= $category === "Education" ? "selected" : "" ?>>Education</option>
+            <option value="Health" <?= $category === "Health" ? "selected" : "" ?>>Health</option>
+            <option value="Entertainment" <?= $category === "Entertainment" ? "selected" : "" ?>>Entertainment</option>
+            <option value="Other" <?= $category === "Other" ? "selected" : "" ?>>Other</option>
         </select>
     </div>
 
+    <!-- Sort by -->
+    <div class="form-group">
+        <label for="sort">Sort by:</label>
+        <select name="sort" id="sort" class="form-control">
+            <option value="date_desc" <?= $sort === "date_desc" ? "selected" : "" ?>>Newest first</option>
+            <option value="date_asc" <?= $sort === "date_asc" ? "selected" : "" ?>>Oldest first</option>
+            <option value="amount_desc" <?= $sort === "amount_desc" ? "selected" : "" ?>>Highest amount</option>
+            <option value="amount_asc" <?= $sort === "amount_asc" ? "selected" : "" ?>>Lowest amount</option>
+            <option value="title_asc" <?= $sort === "title_asc" ? "selected" : "" ?>>Title A-Z</option>
+            <option value="title_desc" <?= $sort === "title_desc" ? "selected" : "" ?>>Title Z-A</option>
+        </select>
+    </div>
+
+    <!-- From Date -->
     <div class="form-group">
         <label for="from_date">From Date:</label>
         <input
@@ -285,6 +302,7 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
         >
     </div>
 
+    <!-- To Date -->
     <div class="form-group">
         <label for="to_date">To Date:</label>
         <input
@@ -296,33 +314,11 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
         >
     </div>
 
-    <div class="form-group">
-        <label for="sort">Sort by:</label>
-        <select name="sort" id="sort" class="form-control">
-            <option value="date_desc" <?= $sort === "date_desc" ? "selected" : "" ?>>
-                Newest first
-            </option>
-            <option value="date_asc" <?= $sort === "date_asc" ? "selected" : "" ?>>
-                Oldest first
-            </option>
-            <option value="amount_desc" <?= $sort === "amount_desc" ? "selected" : "" ?>>
-                Highest amount
-            </option>
-            <option value="amount_asc" <?= $sort === "amount_asc" ? "selected" : "" ?>>
-                Lowest amount
-            </option>
-            <option value="title_asc" <?= $sort === "title_asc" ? "selected" : "" ?>>
-                Title A-Z
-            </option>
-            <option value="title_desc" <?= $sort === "title_desc" ? "selected" : "" ?>>
-                Title Z-A
-            </option>
-        </select>
-    </div>
-
+    <!-- Search button -->
     <button type="submit" class="button">Search</button>
 
 </form>
+
         </section>
 
 
@@ -353,7 +349,7 @@ $expenses = $expenseStatement->fetchAll(PDO::FETCH_ASSOC);
                         <tr>
                             <td><?= htmlspecialchars($expense["title"], ENT_QUOTES, "UTF-8") ?></td>
                             <td><?= htmlspecialchars($expense["amount"], ENT_QUOTES, "UTF-8") ?></td>
-                            <td><?= htmlspecialchars($expense["category"], ENT_QUOTES, "UTF-8") ?></td>
+                            <td><?= htmlspecialchars(ucwords(strtolower($expense["category"])), ENT_QUOTES, "UTF-8") ?></td>
                             <td><?= htmlspecialchars($expense["expense_date"], ENT_QUOTES, "UTF-8") ?></td>
 
                             <td>
