@@ -2,6 +2,7 @@
 
 require __DIR__ . "/config/auth.php";
 require __DIR__ . "/config/database.php";
+require __DIR__ . "/src/ExpenseValidator.php";
 
 if (empty($_SESSION["csrf_token"])) {
     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
@@ -42,42 +43,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $errors = [];
 
-    if ($title === "") {
+    if (!isValidExpenseTitle($title)) {
         $errors[] = "Expense title is required.";
     }
 
-    if (!is_numeric($amount) || (float) $amount <= 0) {
+    if (!isValidExpenseAmount($amount)) {
         $errors[] = "Amount must be greater than zero.";
     }
 
-    if ($category === "") {
-        $errors[] = "Category is required.";
+    if (!isValidExpenseCategoryForExpense($category)) {
+        $errors[] = "Please select a valid expense category.";
     }
 
-    $dateObject = DateTime::createFromFormat("!Y-m-d", $expenseDate);
-
-    if (
-        !$dateObject ||
-        $dateObject->format("Y-m-d") !== $expenseDate
-    ) {
+    if (!isValidExpenseDate($expenseDate)) {
         $errors[] = "Please enter a valid date.";
     }
-
-
-$allowedCategories = [
-    "Food",
-    "Transport",
-    "Shopping",
-    "Bills",
-    "Education",
-    "Health",
-    "Entertainment",
-    "Other"
-];
-
-if (!in_array($category, $allowedCategories, true)) {
-    $errors[] = "Please select a valid expense category.";
-}
 
     if (!empty($errors)) {
         foreach ($errors as $error) {
@@ -130,9 +110,6 @@ exit;
 
     }
 }
-
-
-
 
 //Find the expense belonging to the logged-in user.
 
