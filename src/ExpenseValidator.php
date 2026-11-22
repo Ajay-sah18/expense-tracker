@@ -13,17 +13,16 @@ function isValidExpenseAmount(mixed $amount): bool
     }
 
     return $amount > 0;
-
 }
 
 function isValidExpenseTitle(string $title): bool
 {
- $title = trim($title);
+    $title = trim($title);
 
- if ($title === "") {
-    return false;
- }
- return true;
+    if ($title === "") {
+        return false;
+    }
+    return true;
 }
 
 function isValidExpenseCategory(string $category): bool
@@ -41,15 +40,15 @@ function isValidExpenseDate(string $date): bool
 {
     $dateObject = DateTime::createFromFormat('!Y-m-d', $date);
 
-    if ($dateObject === false){
+    if ($dateObject === false) {
         return false;
     }
     return $dateObject->format('Y-m-d') === $date;
 }
 
-function isAllowedExpenseCategory(string $category) : bool
+function isAllowedExpenseCategory(string $category): bool
 {
- $allowedCategories = [
+    $allowedCategories = [
     "Food",
     "Transport",
     "Shopping",
@@ -58,14 +57,13 @@ function isAllowedExpenseCategory(string $category) : bool
     "Health",
     "Entertainment",
     "Other"
- ];
+    ];
 
- return in_array($category, $allowedCategories, true);
+    return in_array($category, $allowedCategories, true);
 }
 
 function isValidExpenseCategoryForExpense(string $category): bool
 {
-   return isValidExpenseCategory($category)
-   && isAllowedExpenseCategory($category);
-
+    return isValidExpenseCategory($category)
+    && isAllowedExpenseCategory($category);
 }

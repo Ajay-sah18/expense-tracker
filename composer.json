@@ -18,6 +18,18 @@
     },
 
     "require-dev": {
-        "phpunit/phpunit": "^11.5"
+        "phpunit/phpunit": "^11.5",
+        "squizlabs/php_codesniffer": "^4.0"
+    },
+   "scripts": {
+    "hello": "echo Hello from Composer!",
+    "show-php": "php -v",
+    "show-info": "php info.php",
+    "post-autoload-dump": "echo Composer autoload files generated successfully!",
+    "check-style": "phpcs",
+    "fix-style": "phpcbf"
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.8"
     }
 }
