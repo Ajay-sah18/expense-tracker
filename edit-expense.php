@@ -2,7 +2,6 @@
 
 require __DIR__ . "/config/auth.php";
 require __DIR__ . "/config/database.php";
-require __DIR__ . "/src/ExpenseValidator.php";
 
 if (empty($_SESSION["csrf_token"])) {
     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));

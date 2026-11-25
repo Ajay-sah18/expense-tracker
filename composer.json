@@ -8,6 +8,10 @@
             "email": "ajaysah1374@gmail.com"
         }
     ],
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "src/"

@@ -8,4 +8,7 @@
 # Composer dependencies
 /vendor/
 
+# Environment variables
+.env
+
 .phpunit.result.cache

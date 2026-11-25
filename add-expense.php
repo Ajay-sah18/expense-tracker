@@ -2,7 +2,6 @@
 <?php
 require __DIR__ . "/config/auth.php";
 require __DIR__ . "/config/database.php";
-require __DIR__ . "/src/ExpenseValidator.php";
 
 // Generate a CSRF token for the form
 if (empty($_SESSION["csrf_token"])) {
