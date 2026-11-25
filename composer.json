@@ -23,11 +23,12 @@
     },
    "scripts": {
     "hello": "echo Hello from Composer!",
+    "greet": "echo Hello",
     "show-php": "php -v",
     "show-info": "php info.php",
     "post-autoload-dump": "echo Composer autoload files generated successfully!",
-    "check-style": "phpcs",
-    "fix-style": "phpcbf"
+    "check-style": "phpcs src",
+    "fix-style": "phpcbf src"
     },
     "require": {
         "vlucas/phpdotenv": "^5.8"
