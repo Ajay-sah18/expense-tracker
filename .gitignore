@@ -1,6 +1,3 @@
-# Keep database credentials private
-/config/database.php
-
 # Temporary database testing files
 /pdo-test.php
 /test-connection.php
