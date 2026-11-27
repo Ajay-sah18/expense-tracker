@@ -4,7 +4,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
+
+try {
+    $dotenv->load();
+} catch (Dotenv\Exception\InvalidPathException $e) {
+    error_log($e->getMessage());
+    die("Application configuration error.");
+}
+
 
 // Validate required environment variables
 try {
